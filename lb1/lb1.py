@@ -2,6 +2,7 @@ import networkx as nx
 import random
 import csv
 import matplotlib.pyplot as plt
+import scipy as sc
 
 
 # Generate random graph
@@ -76,11 +77,11 @@ def main():
 
         if is_connected:
             G = generate_random_connected_graph(num_vertices, avg_connectivity)
-            # show_graph(G)
+            show_graph(G)
         else:
             #  G = generated_random_disconnected(num_vertices, int((avg_connectivity - 1) * num_vertices / 2))
             G = generated_random_disconnected(num_vertices)
-            # show_graph(G)
+            show_graph(G)
 
         save_graph_to_csv(G, "random_graph.csv")
         print(average_degree(G))
