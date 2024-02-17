@@ -61,6 +61,34 @@ class Cluster:
         print(len(self.nodes))
 
 
+class OrientedGraph:
+    def __init__(self):
+        self.list_node = list()
+        self.sum_conn = 0
+
+    def create_connected_graph(self, num_vertices, avg_connectivity):
+        u = int(avg_connectivity - (avg_connectivity / 2))
+        v = int(avg_connectivity + (avg_connectivity / 2))
+
+        for i in range(1, num_vertices + 1):
+            self.list_node.append(Node(i))
+
+        for node in self.list_node:
+            rand_conn_num = random.randint(u, v)
+            self.sum_conn += rand_conn_num
+            for _ in range(rand_conn_num):
+                node1 = random.choice(self.list_node)
+                if node1 != node:
+                    node.nodes.add(node1)
+        # print(2 * edge / num_vertices)
+        return self
+
+    def print(self):
+        for node in self.list_node:
+            print(node.__str__())
+
+
+
 class Graph:
     def __init__(self):
         self.list_node = list()
@@ -75,13 +103,11 @@ class Graph:
 
         for node in self.list_node:
             rand_conn_num = random.randint(u, v)
-            self.sum_conn += rand_conn_num
             for _ in range(rand_conn_num):
                 node1 = random.choice(self.list_node)
-                if node1 not in node.nodes and node1 != node:
+                if node1 not in node.nodes and node1 != node and len(node.nodes) < v and len(node1.nodes) < v:
                     node.nodes.add(node1)
                     node1.nodes.add(node)
-                    edge += 1
         # print(2 * edge / num_vertices)
         return self
 
@@ -89,7 +115,7 @@ class Graph:
         with open(filename, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=' ')
             for node in graph.list_node:
-                writer.writerow([f'{node.data},', ','.join(str(n.data) for n in node.nodes)])
+                writer.writerow([f'{node.data}:', ','.join(str(n.data) for n in node.nodes)])
 
     def print(self):
         for node in self.list_node:
@@ -114,6 +140,9 @@ def main():
             graph.print()
 
     graph.write_graph_to_csv('graph.csv', graph)
+
+    # graph = Graph().create_connected_graph(10000, 10)
+    # graph.print()
 
 
 if __name__ == "__main__":
