@@ -1,4 +1,5 @@
 import csv
+from collections import deque
 
 from lb1.RandomGraph import Graph, Cluster, OrientedGraph
 
@@ -18,33 +19,29 @@ from lb1.RandomGraph import Graph, Cluster, OrientedGraph
 #         print(i)
 #     return visited
 
-def dfs(graph, start_vertex):
-    visited = set()
-    stack = [start_vertex]
+def dfs(graph, start_node):
+    visited = list()
+    stack = [start_node]
 
     while stack:
-        current_vertex = stack.pop()
-        if current_vertex not in visited:
-            visited.add(current_vertex)
-            print(current_vertex)
-            stack.extend(graph[current_vertex] - visited)
-
-
-
-def bfs(graph, start):
-    i = 0
-    visited = set()
-    queue = [start]
-    for node in graph.list_node:
+        node = stack.pop()
         if node not in visited:
-            queue = [node]
-        while queue:
-            current = queue.pop(0)
-            if current not in visited:
-                visited.add(current)
-                queue.extend(current.nodes - visited)
-        i += 1
-        print(i)
+            visited.append(node)
+            stack.extend(reversed(graph[node]))
+
+    return visited
+
+
+def bfs(graph, start_node):
+    visited = list()
+    queue = deque([start_node])
+
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.append(node)
+            queue.extend(graph[node])
+
     return visited
 
 
@@ -53,6 +50,7 @@ def write_graph_to_csv(filename, graph):
         writer = csv.writer(csvfile, delimiter=' ')
         for node in graph.list_node:
             writer.writerow([f'{node.data},', ','.join(str(n.data) for n in node.nodes)])
+
 
 graph = Graph().create_connected_graph(100, 10)
 # graph.print()

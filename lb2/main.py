@@ -1,27 +1,30 @@
 import csv
 
 from lb1.RandomGraph import Graph, OrientedGraph, Cluster
-from lb2.BFS_DFS import dfs
+from lb2.BFS_DFS import dfs, bfs
 
 
-# from lb2.BFS_DFS import dfs, bfs
 
 
-def write_graph_to_csv(filename, graph):
-    with open(filename, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=' ')
-        for node in graph:
-            writer.writerow([f'{node.data},', ','.join(str(n.data) for n in node.nodes)])
 
-#TODO заново реалзовать считывание с CSV файла
-def read_graph_from_file(file_path):
-    graph = {}
-    with open(file_path, 'r') as file:
-        for line in file:
-            node, *neighbors = map(int, line.strip().split(': ')[1].split(','))
-            graph[node] = neighbors
-    return graph
 
+def read_edges_from_csv(file_name):
+    with open(file_name, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        next(reader)  # skip header row
+        edges = [(int(row[0]), int(row[1])) for row in reader]
+
+    # invert the edges into an adjacent list
+    adj_list = {}
+    for u, v in edges:
+        if u not in adj_list:
+            adj_list[u] = []
+        adj_list[u].append(v)
+        if v not in adj_list:
+            adj_list[v] = []
+        adj_list[v].append(u)
+
+    return adj_list
 
 
 
@@ -33,10 +36,14 @@ def main():
     # write_graph_to_csv('dfs.csv', dfs(graph))
     # # write_graph_to_csv('bfs.csv', bfs(graph, graph.list_node[0]))
     path = 'C:\\Users\\artyo\\PycharmProjects\\Applied Algorithms\\lb1\\graph.csv'
-    graph = read_graph_from_file(path)
+    graph = read_edges_from_csv(path)
     print(graph, sep='\n')
-    # dfs(graph, 3)
-    # write_graph_to_csv('dfs.csv', dfs(graph, 3))
+    ddfs = dfs(graph, 2)
+    print(*ddfs)
+
+    bbfs = bfs(graph, 2)
+    print(*bbfs)
+
 
 
 if __name__ == '__main__':

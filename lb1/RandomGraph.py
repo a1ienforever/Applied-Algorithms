@@ -88,7 +88,6 @@ class OrientedGraph:
             print(node.__str__())
 
 
-
 class Graph:
     def __init__(self):
         self.list_node = list()
@@ -105,17 +104,35 @@ class Graph:
             rand_conn_num = random.randint(u, v)
             for _ in range(rand_conn_num):
                 node1 = random.choice(self.list_node)
-                if node1 not in node.nodes and node1 != node and len(node.nodes) < v and len(node1.nodes) < v:
+                if node not in node1.nodes and node1 not in node.nodes and node1 != node and len(
+                        node.nodes) < v and len(node1.nodes) < v:
                     node.nodes.add(node1)
                     node1.nodes.add(node)
         # print(2 * edge / num_vertices)
         return self
 
-    def write_graph_to_csv(self, filename, graph):
-        with open(filename, 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile, delimiter=' ')
-            for node in graph.list_node:
-                writer.writerow([f'{node.data}:', ','.join(str(n.data) for n in node.nodes)])
+    # def write_graph_to_csv(self, filename, graph):
+    #     with open(filename, 'w', newline='') as csvfile:
+    #         writer = csv.writer(csvfile, delimiter=' ')
+    #         for node in graph.list_node:
+    #             writer.writerow([f'{node.data} ', ' '.join(str(n.data) for n in node.nodes)])
+
+    # def write_graph_to_csv(self, filename, graph):
+    #     with open(filename, 'w', newline='') as csvfile:
+    #         writer = csv.writer(csvfile, delimiter=' ')
+    #
+    #         # Write vertices
+    #         writer.writerow(f'Vertices;Abjacency_List')
+    #         for node in graph.list_node:
+    #             writer.writerow([f'{node.data}', ' '.join(str(n.data) for n in node.nodes)])
+    #             print([f'{node.data},', ','.join(str(n.data) for n in node.nodes)])
+
+    def write_graph_to_csv(self, file_name, graph):
+        with open(file_name, 'w', newline='') as file:
+            writer = csv.writer(file)
+            for vertex in graph.list_node:
+                for neighbor in vertex.nodes:
+                    writer.writerow([vertex.data, neighbor.data])
 
     def print(self):
         for node in self.list_node:
