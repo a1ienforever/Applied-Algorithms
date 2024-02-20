@@ -100,6 +100,8 @@ class Graph:
         for i in range(1, num_vertices + 1):
             self.list_node.append(Node(i))
 
+        print(len(self.list_node))
+
         for node in self.list_node:
             rand_conn_num = random.randint(u, v)
             for _ in range(rand_conn_num):
