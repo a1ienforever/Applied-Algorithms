@@ -110,7 +110,11 @@ class Graph:
                         node.nodes) < v and len(node1.nodes) < v:
                     node.nodes.add(node1)
                     node1.nodes.add(node)
+            if len(node.nodes) == 0:
+                node.nodes.add(node1)
+                node1.nodes.add(node)
         # print(2 * edge / num_vertices)
+        print(len(self.list_node))
         return self
 
     # def write_graph_to_csv(self, filename, graph):
