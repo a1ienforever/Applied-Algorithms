@@ -96,11 +96,8 @@ class Graph:
     def create_connected_graph(self, num_vertices=None, avg_connectivity=None):
         u = int(avg_connectivity - (avg_connectivity / 2))
         v = int(avg_connectivity + (avg_connectivity / 2))
-        edge = 0
         for i in range(1, num_vertices + 1):
             self.list_node.append(Node(i))
-
-        print(len(self.list_node))
 
         for node in self.list_node:
             rand_conn_num = random.randint(u, v)
@@ -113,25 +110,7 @@ class Graph:
             if len(node.nodes) == 0:
                 node.nodes.add(node1)
                 node1.nodes.add(node)
-        # print(2 * edge / num_vertices)
-        print(len(self.list_node))
         return self
-
-    # def write_graph_to_csv(self, filename, graph):
-    #     with open(filename, 'w', newline='') as csvfile:
-    #         writer = csv.writer(csvfile, delimiter=' ')
-    #         for node in graph.list_node:
-    #             writer.writerow([f'{node.data} ', ' '.join(str(n.data) for n in node.nodes)])
-
-    # def write_graph_to_csv(self, filename, graph):
-    #     with open(filename, 'w', newline='') as csvfile:
-    #         writer = csv.writer(csvfile, delimiter=' ')
-    #
-    #         # Write vertices
-    #         writer.writerow(f'Vertices;Abjacency_List')
-    #         for node in graph.list_node:
-    #             writer.writerow([f'{node.data}', ' '.join(str(n.data) for n in node.nodes)])
-    #             print([f'{node.data},', ','.join(str(n.data) for n in node.nodes)])
 
     def write_graph_to_csv(self, file_name, graph):
         with open(file_name, 'w', newline='') as file:
@@ -153,8 +132,6 @@ def main():
         is_connected = arr_param[1] == 'y'
         avg_connectivity = int(arr_param[2])
 
-        # Generate the graph
-
         if is_connected:
             graph = Graph().create_connected_graph(num_vertices, avg_connectivity)
             graph.print()
@@ -163,9 +140,6 @@ def main():
             graph.print()
 
     graph.write_graph_to_csv('graph.csv', graph)
-
-    # graph = Graph().create_connected_graph(10000, 10)
-    # graph.print()
 
 
 if __name__ == "__main__":
