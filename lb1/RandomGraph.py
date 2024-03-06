@@ -2,16 +2,17 @@ import csv
 import random
 from random import randint
 
+from tqdm import tqdm
+
 
 class Node:
     def __init__(self, data=None, weight=None):
         self.neighbors = {}
         self.data = data
 
-    def add_neighbor(self, neighbor, weight):
+    def add_neighbor(self, neighbor, weight=None):
         self.neighbors[neighbor] = weight
         neighbor.neighbors[self] = weight
-
 
     def __str__(self):
         nodes = self.print_nodes()
@@ -58,6 +59,24 @@ class Cluster:
             self.nodes.add(Graph().create_connected_graph(size_graphs[i], avg_connectivity))
         return self
 
+    def write_graph_to_csv(self, file_name, graph, type=None):
+        with open(file_name, 'w', newline='') as file:
+            writer = csv.writer(file)
+            for graph in graph.nodes:
+                for vertex in graph.list_node:
+                    for neighbor in vertex.neighbors:
+                        if type == 'weighted':
+                            weight = random.randint(1, 10)
+                        writer.writerow([vertex.data, neighbor.data])
+
+    def write_graph_to_csv2(self, filename, graph):
+        with open(filename, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile, delimiter=' ')
+            for graph in graph.nodes:
+                for node in graph.list_node:
+                    writer.writerow([f'{node.data},', ','.join(str(n.data) for n in node.neighbors)])
+                writer.writerow(' ')
+
     def print(self):
         for graph in self.nodes:
             for node in graph.list_node:
@@ -103,9 +122,10 @@ class Graph:
         v = int(avg_connectivity + (avg_connectivity / 2))
         for i in range(1, num_vertices + 1):
             self.list_node.append(Node(i))
-
+        pbar = tqdm(total=len(self.list_node), desc='creating graph')
         for node in self.list_node:
             rand_conn_num = random.randint(u, v)
+            pbar.update(1)
             for _ in range(rand_conn_num):
                 node1 = random.choice(self.list_node)
                 if node not in node1.neighbors and node1 not in node.neighbors and node1 != node and len(
@@ -115,8 +135,9 @@ class Graph:
                     node1.add_neighbor(node)
 
             if len(node.neighbors) == 0:
-                node.add_neighbor(node1,)
-                node1.add_neighbor(node,)
+                node.add_neighbor(node1, )
+                node1.add_neighbor(node, )
+        pbar.close()
         return self
 
     def write_graph_to_csv(self, file_name, graph, type=None):
@@ -126,7 +147,14 @@ class Graph:
                 for neighbor in vertex.neighbors:
                     if type == 'weighted':
                         weight = random.randint(1, 10)
-                    writer.writerow([vertex.data, neighbor.data, weight])
+                    writer.writerow([vertex.data, neighbor.data])
+
+    def write_graph_to_csv2(self, filename, graph):
+        with open(filename, 'w', newline='') as csvfile:
+
+            writer = csv.writer(csvfile, delimiter=' ')
+            for node in graph.list_node:
+                writer.writerow([f'{node.data},', ','.join(str(n.data) for n in node.neighbors)])
 
     def print(self):
         for node in self.list_node:
@@ -143,12 +171,14 @@ def main():
 
         if is_connected:
             graph = Graph().create_connected_graph(num_vertices, avg_connectivity)
-            graph.print()
+            # graph.print()
         else:
             graph = Cluster().create_disconnected_graph(num_vertices, avg_connectivity)
-            graph.print()
+            # graph.print()
 
-    graph.write_graph_to_csv('graph.csv', graph, 'weighted')
+    graph.write_graph_to_csv('graph.csv', graph, )
+    graph.write_graph_to_csv2('graph1.csv', graph)
+    graph.print()
 
 
 if __name__ == "__main__":
