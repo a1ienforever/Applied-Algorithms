@@ -105,7 +105,7 @@ class OrientedGraph:
                 if node1 != node:
                     node.neighbors.add(node1)
         # print(2 * edge / num_vertices)
-        return self
+        return [self]
 
     def print(self):
         for node in self.list_node:
@@ -175,10 +175,9 @@ def main():
         else:
             graph = Cluster().create_disconnected_graph(num_vertices, avg_connectivity)
             # graph.print()
-
-    graph.write_graph_to_csv('graph.csv', graph, )
+    # graph.print()
     graph.write_graph_to_csv2('graph1.csv', graph)
-    graph.print()
+
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 import csv
+import time
 
+from collections import defaultdict
 from tqdm import tqdm
-
 
 class DisjointSet:
     def __init__(self, vertices):
@@ -16,39 +17,39 @@ class DisjointSet:
     def union(self, vertex1, vertex2):
         root1 = self.find(vertex1)
         root2 = self.find(vertex2)
+
         if root1 != root2:
-            if self.rank[root1] > self.rank[root2]:
+            if self.rank[root1] < self.rank[root2]:
+                self.parent[root1] = root2
+            elif self.rank[root1] > self.rank[root2]:
                 self.parent[root2] = root1
             else:
-                self.parent[root1] = root2
-                if self.rank[root1] == self.rank[root2]:
-                    self.rank[root2] += 1
+                self.parent[root2] = root1
+                self.rank[root1] += 1
 
 
 def kruskal(graph):
     minimum_spanning_tree = []
     disjoint_set = DisjointSet(graph.keys())
-    edges = []
+    included_vertices = set()
+    edges = ((vertex, neighbor, weight) for vertex, neighbors in graph.items() for neighbor, weight in neighbors)
 
-    # Создание списка ребер
-    for vertex, neighbors in graph.items():
-        for neighbor, weight in neighbors:
-            edges.append((vertex, neighbor, weight))
-
-    # Сортировка ребер по весу
-    edges.sort(key=lambda x: x[2])
+    edges = sorted(edges, key=lambda x: x[2])
     pbar = tqdm(total=len(edges), desc='kruscal')
 
-    # Проход по отсортированным ребрам
     for edge in edges:
         pbar.update(1)
         vertex1, vertex2, weight = edge
-        # Проверка на цикл
-        if disjoint_set.find(vertex1) != disjoint_set.find(vertex2):
-            disjoint_set.union(vertex1, vertex2)
-            minimum_spanning_tree.append(edge)
+        if vertex1 not in included_vertices or vertex2 not in included_vertices:
+            if disjoint_set.find(vertex1) != disjoint_set.find(vertex2):
+                disjoint_set.union(vertex1, vertex2)
+                minimum_spanning_tree.append(edge)
+                included_vertices.update([vertex1, vertex2])
     pbar.close()
     return minimum_spanning_tree
+
+
+
 
 
 def read_graph_file(file_path):
@@ -97,6 +98,7 @@ def write_to_csv(file_path, graph):
             writer.writerow(
                 {"vertex": str(row) + ',', "neighbors": ",".join(str(x[0]) + ";" + str(x[1]) for x in neighbours)})
     pbar.close()
+
 
 if __name__ == '__main__':
 

@@ -5,12 +5,14 @@ from collections import defaultdict
 
 from lb1.RandomGraph import Graph, Cluster, OrientedGraph
 
-def dfs_iterative_return(graphs, start_node):
+
+def dfs_iterative_return(graphs, start_node, progress_bar):
     all_visited = []
     for i, graph in enumerate(graphs, start=1):
         visited = set()
         stack = []
         visited_order = []
+        progress_bar.update(1)
         for start_vertex in graph:
             if start_vertex not in visited:
                 stack.append(start_node)
@@ -23,12 +25,14 @@ def dfs_iterative_return(graphs, start_node):
         all_visited.append(visited_order)
     return all_visited
 
-def bfs(graphs, start_node):
+
+def bfs(graphs, start_node, progress_bar):
     all_visited = []
     for i, graph in enumerate(graphs, start=1):
         visited = set()
         visited_order = []
         for start_vertex in graph:
+            progress_bar.update(1)
             if start_vertex not in visited:
                 queue = deque([start_node])
                 while queue:

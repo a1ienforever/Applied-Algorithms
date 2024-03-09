@@ -60,7 +60,7 @@ class Connect_Graph:
                             _ = rand_conn_num
                             break
 
-                    node.add_neighbor(connected_node, random.randint(1, 10))
+                    node.add_neighbor(connected_node, random.randint(1, 5))
                     # connected_node.vertexs.add(node)
                     # self.sum_conn += 2
                     if len(connected_node.neighbors) == avg_connectivity + 1:

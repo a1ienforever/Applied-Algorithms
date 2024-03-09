@@ -42,17 +42,17 @@ def write_graph_to_csv(filename, result):
             writer.writerow([result[1].result()[i]])
 
 def main():
-    # path = 'lb1\\graph1.csv'
 
     gr = GraphReader()
-    graph = gr.read_graph_from_csv('C:\\Users\\artyo\\PycharmProjects\\Applied Algorithms\\lb1\\graph1.csv')
+    path = 'C:\\Users\\artyo\\PycharmProjects\\Applied Algorithms\\lb1\\graph1.csv'
+    graph = gr.read_graph_from_csv(path)
     print(graph)
     progress_bar = tqdm(total=2 * len(graph), desc='bfs and dfs')
 
     with ThreadPoolExecutor() as executor:
         result = [
-            executor.submit(bfs, graph, 1),
-            executor.submit(dfs_iterative_return, graph, 1)
+            executor.submit(bfs, graph, 1, progress_bar),
+            executor.submit(dfs_iterative_return, graph, 1, progress_bar)
         ]
         concurrent.futures.wait(result)
 
