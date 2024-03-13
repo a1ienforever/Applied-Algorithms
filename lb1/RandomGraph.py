@@ -103,13 +103,20 @@ class OrientedGraph:
             for _ in range(rand_conn_num):
                 node1 = random.choice(self.list_node)
                 if node1 != node:
-                    node.neighbors.add(node1)
+                    node.add_neighbor(node1)
         # print(2 * edge / num_vertices)
-        return [self]
+        return self
 
     def print(self):
         for node in self.list_node:
             print(node.__str__())
+
+    def write_graph_to_csv2(self, filename, graph):
+        with open(filename, 'w', newline='') as csvfile:
+
+            writer = csv.writer(csvfile, delimiter=' ')
+            for node in graph.list_node:
+                writer.writerow([f'{node.data},', ','.join(str(n.data) for n in node.neighbors)])
 
 
 class Graph:

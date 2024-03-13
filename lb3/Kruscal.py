@@ -4,6 +4,7 @@ import time
 from collections import defaultdict
 from tqdm import tqdm
 
+
 class DisjointSet:
     def __init__(self, vertices):
         self.parent = {vertex: vertex for vertex in vertices}
@@ -47,9 +48,6 @@ def kruskal(graph):
                 included_vertices.update([vertex1, vertex2])
     pbar.close()
     return minimum_spanning_tree
-
-
-
 
 
 def read_graph_file(file_path):
