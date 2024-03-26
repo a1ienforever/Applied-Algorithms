@@ -97,14 +97,22 @@ class OrientedGraph:
         for i in range(1, num_vertices + 1):
             self.list_node.append(Node(i, ))
 
+        pbar = tqdm(total=len(self.list_node), desc='creating graph')
         for node in self.list_node:
             rand_conn_num = random.randint(u, v)
-            self.sum_conn += rand_conn_num
+            pbar.update(1)
             for _ in range(rand_conn_num):
                 node1 = random.choice(self.list_node)
-                if node1 != node:
+                if node not in node1.neighbors and node1 not in node.neighbors and node1 != node and len(
+                        node.neighbors) < v and len(node1.neighbors) < v:
+                    # weight = round(random.randint(1, 10), 1)
                     node.add_neighbor(node1)
-        # print(2 * edge / num_vertices)
+
+
+            # if len(node.neighbors) == 0:
+            #     node.add_neighbor(node1, )
+
+        pbar.close()
         return self
 
     def print(self):
@@ -147,14 +155,6 @@ class Graph:
         pbar.close()
         return self
 
-    def write_graph_to_csv(self, file_name, graph, type=None):
-        with open(file_name, 'w', newline='') as file:
-            writer = csv.writer(file)
-            for vertex in graph.list_node:
-                for neighbor in vertex.neighbors:
-                    if type == 'weighted':
-                        weight = random.randint(1, 10)
-                    writer.writerow([vertex.data, neighbor.data])
 
     def write_graph_to_csv2(self, filename, graph):
         with open(filename, 'w', newline='') as csvfile:
@@ -180,9 +180,9 @@ def main():
             graph = Graph().create_connected_graph(num_vertices, avg_connectivity)
             # graph.print()
         else:
-            graph = Cluster().create_disconnected_graph(num_vertices, avg_connectivity)
+            graph = OrientedGraph().create_connected_graph(num_vertices, avg_connectivity)
             # graph.print()
-    # graph.print()
+    graph.print()
     graph.write_graph_to_csv2('graph1.csv', graph)
 
 

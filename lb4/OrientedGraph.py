@@ -1,8 +1,6 @@
 import csv
 import random
 
-import networkx as nx
-from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 from GraphReader import GraphReader
@@ -13,19 +11,27 @@ class Node:
         self.neighbors = set()
         self.data = data
 
+    def __str__(self):
+        nodes = self.print_nodes()
+        return f"{self.data}; {nodes}"
 
-class OrientedGraph:
+    def print_nodes(self):
+        nodes = ''
+        for node in self.neighbors:
+            nodes += str(node.data) + ':' + str(node.data) + ','
+        return nodes
+
+class Graph:
     def __init__(self):
         self.list_node = list()
 
-    def create_graph(self, num_vertices, avg_connectivity):
+    def create_graph(self, num_vertices=None, avg_connectivity=None):
         u = int(avg_connectivity - (avg_connectivity / 2))
         v = int(avg_connectivity + (avg_connectivity / 2))
-
         for i in range(1, num_vertices + 1):
             self.list_node.append(Node(i))
-        pbar = tqdm(total=len(self.list_node), desc='creating graph')
 
+        pbar = tqdm(total=len(self.list_node), desc='creating graph')
         for node in self.list_node:
             rand_conn_num = random.randint(u, v)
             pbar.update(1)
@@ -36,44 +42,37 @@ class OrientedGraph:
                         node.neighbors) < v and len(node1.neighbors) < v:
                     node.neighbors.add(node1)
 
+            if len(node.neighbors) == 0:
+                node.neighbors.add(node1, )
+
         pbar.close()
         return self
 
+    def print(self):
+        for node in self.list_node:
+            print(node.__str__())
+
     def write_graph_to_csv2(self, filename, graph):
         with open(filename, 'w', newline='') as csvfile:
-            pbar = tqdm(total=len(self.list_node), desc='writing graph')
 
             writer = csv.writer(csvfile, delimiter=' ')
             for node in graph.list_node:
-                pbar.update(1)
                 writer.writerow([f'{node.data},', ','.join(str(n.data) for n in node.neighbors)])
-            pbar.close()
+
+
 def main():
-    graph = OrientedGraph().create_graph(10, 4)
-    graph.write_graph_to_csv2('oriented_graph.csv', graph)
-    gr = GraphReader()
-    path = "C:\\Users\\artyo\\PycharmProjects\Applied Algorithms\\lb4\\oriented_graph.csv"
-    graph = gr.read_graph_from_csv(path)
-    for key, value in graph.items():
-        print(key, ":", value)
 
-    G = nx.DiGraph()
+    graph = Graph()
 
-    # Добавление ребер в граф на основе словаря смежности
-    for node, neighbors in graph.items():
-        for neighbor in neighbors:
-            G.add_edge(node, neighbor)
+    with open("C:\\Users\\artyo\\PycharmProjects\\Applied Algorithms\\lb4\\config.txt", mode='r') as config:
+        config_reader = config.read()
+        arr_param = config_reader.split(' ')
+        num_vertices = int(arr_param[0])
+        is_connected = arr_param[1] == 'y'
+        avg_connectivity = int(arr_param[2])
 
-    # Рассчитываем позиции вершин в графе
-    pos = nx.spring_layout(G)
-
-    # Отрисовка графа
-    nx.draw(G, pos, with_labels=True, node_size=700, node_color="skyblue", font_size=12, font_weight="bold",
-            arrows=True)
-
-    # Показать граф
-    plt.show()
-
+        graph.create_graph(num_vertices, avg_connectivity)
+        graph.write_graph_to_csv2('oriented_graph.csv', graph)
 
 if __name__ == '__main__':
     main()

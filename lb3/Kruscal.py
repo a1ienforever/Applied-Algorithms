@@ -36,12 +36,12 @@ def kruskal(graph):
     edges = ((vertex, neighbor, weight) for vertex, neighbors in graph.items() for neighbor, weight in neighbors)
 
     edges = sorted(edges, key=lambda x: x[2])
-    pbar = tqdm(total=len(edges), desc='kruscal')
+    pbar = tqdm(total=100000, desc='kruscal')
 
     for edge in edges:
         pbar.update(1)
         vertex1, vertex2, weight = edge
-        if vertex1 not in included_vertices or vertex2 not in included_vertices:
+        if vertex1 not in included_vertices or vertex2 not in included_vertices: # remark
             if disjoint_set.find(vertex1) != disjoint_set.find(vertex2):
                 disjoint_set.union(vertex1, vertex2)
                 minimum_spanning_tree.append(edge)

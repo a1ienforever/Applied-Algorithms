@@ -10,19 +10,16 @@ class GraphReader:
             reader = csv.reader(csvfile)
             i = 0
             for row in reader:
-
                 if row[0] in adjacency_lists:
                     adjacency_lists = {int(k): v for k, v in adjacency_lists.items() if v}
                     graph.append(adjacency_lists)
                     adjacency_lists = {}
                 vertex = row[0]
-                if row[1:] == ' ':
-                    continue
-                neighbors = [int(neighbor) for neighbor in row[1:]]
+                neighbors = {int(neighbor) for neighbor in row[1:]}
                 i += 1
-                adjacency_lists[vertex] = neighbors
-
-        return adjacency_lists
+                adjacency_lists[int(vertex)] = neighbors
+        graph.append(adjacency_lists)
+        return graph
 
 
 
