@@ -1,7 +1,7 @@
 import csv
 import sys
 
-sys.setrecursionlimit(10_000_000)
+sys.setrecursionlimit(10000)
 
 def kosaraju(graph):
     def dfs(node, visited, stack):
@@ -41,9 +41,9 @@ def kosaraju(graph):
             dfs_second(node, visited, component)
             strong_components.append(component)
 
-    # Создаем связный список для максимальной компоненты
+    # Создаем смежные списки для максимальной компоненты
     max_component = max(strong_components, key=len)
-    subgraph = {node: list(graph[node] & set(max_component)) for node in max_component}
+    subgraph = {node: set(graph[node] & set(max_component)) for node in max_component}
     return subgraph
 
 
@@ -63,12 +63,11 @@ def main():
     graph = read_graph_from_csv(path)
     max_subgraph = kosaraju(graph)
     print(max_subgraph)
-    print(len(max_subgraph))
 
     with open('max_subgraph.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         for node, neighbors in max_subgraph.items():
-            writer.writerow([node] + neighbors)
+            writer.writerow([node] + list(neighbors))
 
 
 if __name__ == '__main__':
